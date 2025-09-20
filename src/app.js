@@ -3,6 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const { User } = require('../models');
 
 const app = express();
 
@@ -23,19 +24,35 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/auth/google/callback"
   },
-  function(accessToken, refreshToken, profile, cb) {
-    // This function will be called after successful authentication.
-    // In the next step, we will implement user lookup/creation here.
-    return cb(null, profile);
+  async function(accessToken, refreshToken, profile, cb) {
+    try {
+      let user = await User.findOne({ where: { google_id: profile.id } });
+
+      if (!user) {
+        user = await User.create({
+          google_id: profile.id,
+          email: profile.emails[0].value,
+        });
+      }
+
+      return cb(null, user);
+    } catch (err) {
+      return cb(err);
+    }
   }
 ));
 
 passport.serializeUser(function(user, cb) {
-  cb(null, user);
+  cb(null, user.id);
 });
 
-passport.deserializeUser(function(obj, cb) {
-  cb(null, obj);
+passport.deserializeUser(async function(id, cb) {
+  try {
+    const user = await User.findByPk(id);
+    cb(null, user);
+  } catch (err) {
+    cb(err);
+  }
 });
 
 app.get('/', (req, res) => {
@@ -43,6 +60,14 @@ app.get('/', (req, res) => {
 });
 
 // Google auth route
-app.get('/auth/google', passport.authenticate('google', { scope: ['profile'] }));
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// Google auth callback route
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 module.exports = app;

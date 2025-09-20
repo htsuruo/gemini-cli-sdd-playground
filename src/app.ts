@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import passport from 'passport';
 import { Strategy as GoogleStrategy, Profile, VerifyCallback } from 'passport-google-oauth20';
-import { User } from '../models';
+import { User } from '../models/index.js';
 
 
 const app = express();

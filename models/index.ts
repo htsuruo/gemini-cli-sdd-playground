@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize'
-import sequelize from '../src/db'
-import recoveryCodeInitializer from './recoverycode'
-import twoFactorAuthInitializer from './twofactorauth'
-import userInitializer from './user'
+import sequelize from '../src/db.js'
+import recoveryCodeInitializer from './recoverycode.js'
+import twoFactorAuthInitializer from './twofactorauth.js'
+import userInitializer from './user.js'
 
 const User = userInitializer(sequelize)
 const RecoveryCode = recoveryCodeInitializer(sequelize)

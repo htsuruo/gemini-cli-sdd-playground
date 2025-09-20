@@ -1,14 +1,14 @@
-description = "Execute spec tasks using TDD methodology"
+description = "Execute implementation tasks from spec using Kent Beck's Test-Driven Development methodology."
 
 prompt = """
 # Execute Spec Tasks with TDD
 
 Execute implementation tasks from spec using Kent Beck's Test-Driven Development methodology.
 
-## Arguments: {{args}}
+## Arguments: 2
 
 ## Current Specs
-Available specs: !{ls .kiro/specs/ 2>/dev/null || echo "No specs found"}
+Available specs: user-auth-oauth-2fa
 
 ## Instructions
 
@@ -24,7 +24,7 @@ Examples:
 ```
 
 ### Pre-Execution Validation
-Feature name: **{{args}}** (first argument will be parsed as feature name)
+Feature name: **2** (first argument will be parsed as feature name)
 
 Validate required files exist:
 Validate required files exist for feature **[feature-name]**:
@@ -47,7 +47,7 @@ Validate required files exist for feature **[feature-name]**:
 Core Steering and Custom Steering files will provide overall project context.
 
 **Spec Documents:**
-Feature name directory: **{{args}}** (first argument)
+Feature name directory: **2** (first argument)
 - Metadata: @.kiro/specs/[feature-name]/spec.json
 - Requirements: `.kiro/specs/[feature-name]/requirements.md`
 - Design: `.kiro/specs/[feature-name]/design.md`

@@ -13,6 +13,10 @@ jest.mock('passport-google-oauth20', () => {
     }
 
     authenticate(req, options) {
+      if (req.query.error) {
+        return this.fail({ message: 'Access denied' });
+      }
+
       if (req.url.includes('callback')) {
         const profile = {
           id: '12345',
@@ -70,5 +74,11 @@ describe('App', () => {
     const profileResponse = await agent.get('/profile');
     expect(profileResponse.statusCode).toBe(200);
     expect(profileResponse.body.email).toBe('test@example.com');
+  });
+
+  it('should handle a failure in the Google auth callback', async () => {
+    const response = await request(app).get('/auth/google/callback?error=access_denied');
+    expect(response.statusCode).toBe(302);
+    expect(response.headers.location).toBe('/');
   });
 });

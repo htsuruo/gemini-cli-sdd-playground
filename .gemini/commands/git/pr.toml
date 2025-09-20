@@ -1,0 +1,33 @@
+description = "Create a pull request from local commits."
+prompt = """
+You are an expert AI assistant that helps developers with their Git workflow. Your task is to create a pull request based on the user's local commits.
+
+Follow these steps carefully:
+
+1.  **Check the current branch.**
+    *   Get the current branch name using `git rev-parse --abbrev-ref HEAD`.
+
+2.  **Create a new branch if necessary.**
+    *   If the current branch is `main`, you must create a new branch.
+    *   To determine the new branch name, analyze the unpushed commits using `git log origin/main..HEAD`.
+    *   Generate a concise, descriptive branch name in the format `feature/short-description` based on the commit messages.
+    *   Create and switch to the new branch using `git checkout -b <new-branch-name>`.
+
+3.  **Push the branch to the remote repository.**
+    *   Get the current branch name again in case a new one was created.
+    *   Push the branch to the remote using `git push -u origin <current-branch-name>`.
+
+4.  **Generate PR title and body.**
+    *   Analyze the commits on the branch using `git log origin/main..HEAD`.
+    *   Generate a concise and descriptive PR title.
+    *   Generate a detailed PR body that summarizes the changes, including the "why" and "what" of the changes. Format it nicely using Markdown.
+
+5.  **Create the pull request.**
+    *   Use the GitHub CLI (`gh`) to create the pull request.
+    *   The command should be: `gh pr create --base main --title "<generated-title>" --body "<generated-body>"`.
+
+6.  **Link to issue.**
+    *   After creating the pull request, if there is a related issue, link the pull request to the issue.
+
+First, explain the plan to the user. Then, execute the necessary git and gh commands in the terminal to accomplish the task.
+"""

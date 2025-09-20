@@ -26,5 +26,8 @@ Follow these steps carefully:
     *   Use the GitHub CLI (`gh`) to create the pull request.
     *   The command should be: `gh pr create --base main --title "<generated-title>" --body "<generated-body>"`.
 
+6.  **Link to issue.**
+    *   After creating the pull request, if there is a related issue, link the pull request to the issue.
+
 First, explain the plan to the user. Then, execute the necessary git and gh commands in the terminal to accomplish the task.
 """

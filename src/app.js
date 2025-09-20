@@ -70,4 +70,13 @@ app.get('/auth/google/callback',
     res.redirect('/');
   });
 
+// Protected profile route
+app.get('/profile', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.status(200).json(req.user);
+  } else {
+    res.status(401).send('Unauthorized');
+  }
+});
+
 module.exports = app;

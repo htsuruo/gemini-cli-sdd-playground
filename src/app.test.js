@@ -54,7 +54,8 @@ describe('App', () => {
   });
 
   it('should handle the Google auth callback and create a new user', async () => {
-    const response = await request(app).get('/auth/google/callback');
+    const agent = request.agent(app);
+    const response = await agent.get('/auth/google/callback');
 
     // Check that the user was created in the database
     const user = await User.findOne({ where: { google_id: '12345' } });
@@ -64,5 +65,10 @@ describe('App', () => {
     // Check for the redirect
     expect(response.statusCode).toBe(302);
     expect(response.headers.location).toBe('/');
+
+    // Check if the user is authenticated by accessing a protected route
+    const profileResponse = await agent.get('/profile');
+    expect(profileResponse.statusCode).toBe(200);
+    expect(profileResponse.body.email).toBe('test@example.com');
   });
 });

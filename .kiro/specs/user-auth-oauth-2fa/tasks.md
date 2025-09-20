@@ -10,7 +10,7 @@
     - _Requirements: 全ての要求事項_
 
 - [ ] 2. OAuth 2.0認証機能の実装
-  - [ ] 2.1 Google OAuth 2.0ストラテジーの実装
+  - [x] 2.1 Google OAuth 2.0ストラテジーの実装
     - Passport.jsと`passport-google-oauth20`を導入・設定する。
     - Google認証へのリダイレクトエンドポイントを作成する。
     - _Requirements: 1.1_

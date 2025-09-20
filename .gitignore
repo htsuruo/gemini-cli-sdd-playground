@@ -52,5 +52,5 @@ node_modules/
 # Build output
 dist/
 
-.gemini/
+# .gemini/
 gha-creds-*.json

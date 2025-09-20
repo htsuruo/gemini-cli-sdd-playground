@@ -1,16 +1,17 @@
 'use strict';
-/** @type {import('sequelize-cli').Migration} */
+import { QueryInterface, DataTypes } from 'sequelize';
+
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface: QueryInterface) {
     await queryInterface.createTable('RecoveryCodes', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: DataTypes.INTEGER
       },
       user_id: {
-        type: Sequelize.UUID,
+        type: DataTypes.UUID,
         references: {
           model: 'Users',
           key: 'id'
@@ -19,22 +20,22 @@ module.exports = {
         onDelete: 'CASCADE',
       },
       code_hash: {
-        type: Sequelize.STRING
+        type: DataTypes.STRING
       },
       is_used: {
-        type: Sequelize.BOOLEAN
+        type: DataTypes.BOOLEAN
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: DataTypes.DATE
       }
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface: QueryInterface) {
     await queryInterface.dropTable('RecoveryCodes');
   }
 };

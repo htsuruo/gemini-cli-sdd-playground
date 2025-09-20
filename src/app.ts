@@ -1,15 +1,16 @@
-require('dotenv').config();
-const express = require('express');
-const session = require('express-session');
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const { User } = require('../models');
+import 'dotenv/config';
+import express, { Request, Response, NextFunction } from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import { Strategy as GoogleStrategy, Profile, VerifyCallback } from 'passport-google-oauth20';
+import { User } from '../models';
+
 
 const app = express();
 
 // Session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET as string,
   resave: false,
   saveUninitialized: true,
 }));
@@ -20,12 +21,16 @@ app.use(passport.session());
 
 // Passport configuration
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    clientID: process.env.GOOGLE_CLIENT_ID as string,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     callbackURL: "/auth/google/callback"
   },
-  async function(accessToken, refreshToken, profile, cb) {
+  async (accessToken: string, refreshToken: string, profile: Profile, cb: VerifyCallback) => {
     try {
+      if (!profile.emails || profile.emails.length === 0) {
+        return cb(new Error("No email found in profile"));
+      }
+
       let user = await User.findOne({ where: { google_id: profile.id } });
 
       if (!user) {
@@ -37,16 +42,16 @@ passport.use(new GoogleStrategy({
 
       return cb(null, user);
     } catch (err) {
-      return cb(err);
+      return cb(err as any);
     }
   }
 ));
 
-passport.serializeUser(function(user, cb) {
+passport.serializeUser((user: any, cb) => {
   cb(null, user.id);
 });
 
-passport.deserializeUser(async function(id, cb) {
+passport.deserializeUser(async (id: number, cb) => {
   try {
     const user = await User.findByPk(id);
     cb(null, user);
@@ -55,7 +60,7 @@ passport.deserializeUser(async function(id, cb) {
   }
 });
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.status(200).send('OK');
 });
 
@@ -65,13 +70,13 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'em
 // Google auth callback route
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/' }),
-  function(req, res) {
+  (req: Request, res: Response) => {
     // Successful authentication, redirect home.
     res.redirect('/');
   });
 
 // Protected profile route
-app.get('/profile', (req, res) => {
+app.get('/profile', (req: Request, res: Response) => {
   if (req.isAuthenticated()) {
     res.status(200).json(req.user);
   } else {
@@ -79,4 +84,4 @@ app.get('/profile', (req, res) => {
   }
 });
 
-module.exports = app;
+export default app;

@@ -1,18 +1,18 @@
-const request = require('supertest');
-const app = require('./app');
-const { User, sequelize } = require('../models');
+import request from 'supertest';
+import app from './app';
+import { User, sequelize } from '../models';
 
 // Mock the passport-google-oauth20 strategy
 jest.mock('passport-google-oauth20', () => {
   const Strategy = require('passport-strategy');
   class MockStrategy extends Strategy {
-    constructor(options, verify) {
+    constructor(options: any, verify: any) {
       super();
       this.name = 'google';
       this.verify = verify;
     }
 
-    authenticate(req, options) {
+    authenticate(req: any, options: any) {
       if (req.query.error) {
         return this.fail({ message: 'Access denied' });
       }
@@ -23,7 +23,7 @@ jest.mock('passport-google-oauth20', () => {
           displayName: 'Test User',
           emails: [{ value: 'test@example.com' }],
         };
-        this.verify(null, null, profile, (err, user) => {
+        this.verify(null, null, profile, (err: any, user: any) => {
           if (err) {
             return this.error(err);
           }
@@ -64,7 +64,7 @@ describe('App', () => {
     // Check that the user was created in the database
     const user = await User.findOne({ where: { google_id: '12345' } });
     expect(user).not.toBeNull();
-    expect(user.email).toBe('test@example.com');
+    expect(user!.email).toBe('test@example.com');
 
     // Check for the redirect
     expect(response.statusCode).toBe(302);

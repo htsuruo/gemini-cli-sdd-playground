@@ -13,3 +13,5 @@ RecoveryCode.associate({ User })
 TwoFactorAuth.associate({ User })
 
 export { RecoveryCode, sequelize, TwoFactorAuth, User }
+export type { RecoveryCodeAttributes } from './recoverycode.js'
+export type { UserAttributes } from './user.js'

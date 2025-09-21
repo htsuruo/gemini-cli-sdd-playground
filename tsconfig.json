@@ -9,7 +9,8 @@
     "outDir": "./dist",
     "moduleResolution": "nodenext",
     "resolveJsonModule": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "isolatedModules": true
   },
   "include": ["src/**/*", "models/**/*"],
   "exclude": ["node_modules", "**/*.test.ts"]
